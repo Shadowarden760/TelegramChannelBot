@@ -1,3 +1,5 @@
 .idea
 .venv
 .env
+project/logs/bot_log.txt
+**/__pycache__/

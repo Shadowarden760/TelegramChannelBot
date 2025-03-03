@@ -2,7 +2,7 @@ from pathlib import Path
 
 import telegram
 from typing import Union
-from project.bot_utils.models import BotLogModel
+from project.bot.models import BotLogModel
 from project.config import logger
 
 
@@ -35,13 +35,13 @@ class BotClient:
             ))
             return False
 
-    async def send_photo_message(self, photo_path: Path, caption: Union[str, None] = None) -> bool:
+    async def send_photo_message(self, photo: bytes, caption: Union[str, None] = None) -> bool:
         action = BotClient.send_photo_message.__name__
         try:
             if caption is not None and len(caption) < telegram.constants.MessageLimit.CAPTION_LENGTH:
-                message = await self.__bot.send_photo(chat_id=self.__chat_id, caption=caption, photo=photo_path)
+                message = await self.__bot.send_photo(chat_id=self.__chat_id, caption=caption, photo=photo)
             else:
-                message = await self.__bot.send_photo(chat_id=self.__chat_id, photo=photo_path)
+                message = await self.__bot.send_photo(chat_id=self.__chat_id, photo=photo)
             self.__save_logs(BotLogModel(
                 message_id=message.message_id,
                 message_text=message.text,
@@ -74,14 +74,14 @@ class BotClient:
             ))
             return False
 
-    async def configure_channel(self, new_chat_title: Union[str, None] = None,
+    async def configure_channel(self, new_channel_title: Union[str, None] = None,
                                 new_channel_description: Union[str, None] = None,
-                                new_channel_photo: Union[Path, None] = None):
+                                new_channel_photo: Union[bytes, None] = None):
         action = BotClient.configure_channel.__name__
         try:
-            if new_chat_title is not None and telegram.constants.ChatLimit.MIN_CHAT_TITLE_LENGTH <= len(
-                    new_chat_title) <= telegram.constants.ChatLimit.MAX_CHAT_TITLE_LENGTH:
-                title_status = await self.__bot.set_chat_title(chat_id=self.__chat_id, title=new_chat_title)
+            if new_channel_title is not None and telegram.constants.ChatLimit.MIN_CHAT_TITLE_LENGTH <= len(
+                    new_channel_title) <= telegram.constants.ChatLimit.MAX_CHAT_TITLE_LENGTH:
+                title_status = await self.__bot.set_chat_title(chat_id=self.__chat_id, title=new_channel_title)
                 self.__save_logs(BotLogModel(
                     message_text="configurate title",
                     action=action,

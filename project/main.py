@@ -1,20 +1,22 @@
 import asyncio
-import pathlib
 
-from bot_utils.bot_client import BotClient
+import uvicorn
+from fastapi import FastAPI
+
 from config import get_settings
+from api import channel
 
 settings = get_settings()
 
+app = FastAPI()
+app.include_router(router=channel.router)
+
 
 async def main():
-    my_bot = BotClient(bot_token=settings.BOT_TOKEN, chat_id=settings.CHAT_ID, debug=settings.DEBUG)
-    await my_bot.configure_channel(
-        new_chat_title="your channel name",
-        new_channel_description="your channel description",
-        new_channel_photo=pathlib.Path("images/test_image.jpg")
-    )
-    # await my_bot.send_text_message(text="Some test message")
+    if settings.DEBUG:
+        uvicorn.run(app="main:app", reload=True, proxy_headers=True, host="0.0.0.0", port=settings.WEB_PORT)
+    else:
+        uvicorn.run(app="main:app", proxy_headers=True, host="0.0.0.0", port=settings.WEB_PORT, workers=4)
 
 
 if __name__ == "__main__":

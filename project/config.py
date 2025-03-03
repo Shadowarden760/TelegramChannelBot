@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     BOT_TOKEN: str = os.getenv("BOT_TOKEN")
     CHAT_ID: str = os.getenv("CHAT_ID")
+    WEB_PORT: int = os.getenv("WEB_PORT")
 
 
 @lru_cache(maxsize=1)
