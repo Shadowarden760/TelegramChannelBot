@@ -62,3 +62,15 @@ async def delete_text_message(message_id: int) -> dict:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"{ex}"
         )
+
+@router.post(path="/add_new_admin", name="channel:add_new_admin")
+async def add_new_admin(user_id: int) -> dict:
+    try:
+        bot = BotClient(bot_token=settings.BOT_TOKEN, chat_id=settings.CHAT_ID, debug=settings.DEBUG)
+        await bot.create_new_admin(user_id=user_id)
+        return {"status": "ok"}
+    except Exception as ex:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"{ex}"
+        )

@@ -1,7 +1,7 @@
-from pathlib import Path
+from typing import Union
 
 import telegram
-from typing import Union
+
 from project.bot.models import BotLogModel
 from project.config import logger
 
@@ -111,6 +111,22 @@ class BotClient:
                 status=False
             ))
             return False
+
+    async def create_new_admin(self, user_id: int):
+        print(await self.__bot.promote_chat_member(
+            chat_id=self.__chat_id,
+            user_id=user_id,
+            can_post_messages=True,
+            can_edit_messages=True,
+            can_delete_messages=True,
+            can_pin_messages=True,
+            can_manage_video_chats=True,
+            can_manage_topics=True,
+            can_post_stories=True,
+            can_edit_stories=True,
+            can_delete_stories=True,
+        ))
+        print(await self.__bot.get_chat_member_count(chat_id=self.__chat_id))
 
     def __save_logs(self, bot_log: BotLogModel):
         if self.__debug:
