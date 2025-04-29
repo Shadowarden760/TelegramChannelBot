@@ -74,3 +74,14 @@ async def add_new_admin(user_id: int) -> dict:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"{ex}"
         )
+
+@router.get(path="/get_channel_stat", name="channel:get_channel_stat")
+async def get_channel_stat() -> dict:
+    try:
+        bot = BotClient(bot_token=settings.BOT_TOKEN, chat_id=settings.CHAT_ID, debug=settings.DEBUG)
+        return {"status": "ok", "data": await bot.get_channel_stat()}
+    except Exception as ex:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"{ex}"
+        )
